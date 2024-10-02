@@ -1,13 +1,36 @@
-import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Pressable,
+  Image,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const index = () => {
-  const [Option, setOption] = useState("Today");
   const router = useRouter();
+  const [Option, setOption] = useState("Today");
+  const [habits, sethabits] = useState([]);
+  //We are fetching the data from backend using useEffect//
+  const fetchHabits = async () => {
+    try {
+      const response = await axios.get("http://192.168.1.59:3000/habitsList");
+      sethabits(response.data);
+    } catch (error) {
+      console.log("Error in fetching the habits");
+    }
+  };
+  console.log(habits);
+  useEffect(() => {
+    fetchHabits();
+  }, []);
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white", padding: 10 }}>
       <View
@@ -86,6 +109,68 @@ const index = () => {
           </Text>
         </Pressable>
       </View>
+
+      {/* if the there is habit we will be displaying it here */}
+      {Option === "Today" && habits?.length > 0 ? (
+        <View>
+          {habits.map((value, index) => (
+            <Pressable
+              style={{
+                marginVertical: 10,
+                backgroundColor: value.color,
+                borderRadius: 8,
+                padding: 10,
+                alignItems: "center",
+              }}
+              key={index}
+            >
+              <Text style={{ fontSize: 16, color: "white", fontWeight: "600" }}>
+                {value.title}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      ) : (
+        <View>
+          <Image
+            style={{
+              width: 120,
+              height: 120,
+              resizeMode: "cover",
+              marginHorizontal: "auto",
+              marginTop: 150,
+            }}
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/128/10609/10609386.png",
+            }}
+          />
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 20,
+              fontWeight: "600",
+              marginTop: 50,
+            }}
+          >
+            No habits for today {"\n"}
+            Create one?
+          </Text>
+
+          <Pressable
+            onPress={() => router.push("/(home)/create")}
+            style={{
+              backgroundColor: "#0071c5",
+              marginTop: 10,
+              padding: 10,
+              marginHorizontal: "auto",
+              paddingHorizontal: 20,
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ color: "white" }}>Create</Text>
+          </Pressable>
+        </View>
+      )}
     </ScrollView>
   );
 };
