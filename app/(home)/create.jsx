@@ -5,16 +5,47 @@ import {
   TextInput,
   TouchableOpacity,
   Pressable,
+  Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "expo-router";
-import { colors } from "../../constants";
+import { colors } from "../../constants/colors";
 import { days } from "../../constants";
+import axios from "axios";
 
 const create = () => {
   const router = useRouter();
+  const [selectedColor, setselectedColor] = useState("");
+  const [title, settitle] = useState("");
+
+  //add habit to the backend//
+  //adding the UI functionality with backend//
+  //ViewModel - like that//
+  async function addHabit() {
+    try {
+      const habitDetails = {
+        title: title,
+        color: selectedColor,
+        repeatMode: "daily",
+        remainder: true,
+      };
+      //initializing the response//
+      const response = await axios.post(
+        "http://192.168.1.59:3000/habits",
+        habitDetails
+      );
+      if (response.status == 200) {
+        settitle("");
+        Alert.alert("Habit added successfully", "Enjoy");
+      }
+      console.log("habit added", response);
+    } catch (error) {
+      console.log("Error in Adding the habit", error);
+    }
+  }
 
   return (
     <View style={{ padding: 16 }}>
@@ -29,6 +60,8 @@ const create = () => {
       </Text>
 
       <TextInput
+        value={title}
+        onChangeText={(text) => settitle(text)}
         placeholder="Title"
         style={{
           width: "95%",
@@ -50,9 +83,17 @@ const create = () => {
             gap: 10,
           }}
         >
-          {colors.map((value, index) => (
-            <TouchableOpacity key={index} activeOpacity={0.8}>
-              <FontAwesome name="square" size={32} color={value} />
+          {colors?.map((value, index) => (
+            <TouchableOpacity
+              onPress={() => setselectedColor(value)}
+              key={index}
+              activeOpacity={0.8}
+            >
+              {selectedColor === value ? (
+                <AntDesign name="plussquare" size={32} color={value} />
+              ) : (
+                <FontAwesome name="square" size={32} color={value} />
+              )}
             </TouchableOpacity>
           ))}
         </View>
@@ -139,6 +180,7 @@ const create = () => {
       </View>
 
       <Pressable
+        onPress={addHabit}
         style={{
           width: "auto",
           backgroundColor: "#003980",
