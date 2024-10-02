@@ -132,7 +132,7 @@ const create = () => {
           marginHorizontal: 5,
         }}
       >
-        <Text style={{ fontSize: 16, fontWeight: "500" }}>Remaider</Text>
+        <Text style={{ fontSize: 16, fontWeight: "500" }}>Reminder</Text>
         <Text style={{ fontSize: 16, fontWeight: "500", color: "#3CA6E9" }}>
           Yes
         </Text>

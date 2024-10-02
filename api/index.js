@@ -22,3 +22,24 @@ mongoose
 app.listen(port, () => {
   console.log("Server running on port 3000");
 });
+
+const Habit = require("./models/habit");
+//Endpoint to create an New Habit in the backend//
+//req - request | res - response//
+app.post("/habits", async (req, res) => {
+  try {
+    const { title, color, repeatMode, reminder } = req.body;
+    const newHabit = new Habit({
+      title,
+      color,
+      repeatMode,
+      reminder,
+    });
+
+    // after doing this we need to save it in backend//
+    const savedHabit = await newHabit.save();
+    res.status(200).json(savedHabit);
+  } catch (error) {
+    res.status(500).json({ error: "Network Error" });
+  }
+});
