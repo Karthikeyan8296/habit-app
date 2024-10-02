@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState } from "react";
 
 const index = () => {
   const [Option, setOption] = useState("Today");
-
+  const router = useRouter();
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "white", padding: 10 }}>
       <View
@@ -18,7 +19,12 @@ const index = () => {
         }}
       >
         <Ionicons name="logo-bitbucket" size={30} color="black" />
-        <AntDesign name="plus" size={24} color="black" />
+        <AntDesign
+          onPress={() => router.push("/(home)/create")}
+          name="plus"
+          size={24}
+          color="black"
+        />
       </View>
 
       <Text
@@ -43,10 +49,10 @@ const index = () => {
         <Pressable
           onPress={() => setOption("Today")}
           style={{
-            backgroundColor: Option == "Today" ? "#E0E0E0" : "transparent",
+            backgroundColor: Option == "Today" ? "#DBDBDB" : "transparent",
             paddingHorizontal: 10,
             paddingVertical: 8,
-            borderRadius: 24,
+            borderRadius: 20,
           }}
         >
           <Text style={{ textAlign: "center", color: "grey", fontSize: 14 }}>
@@ -59,7 +65,7 @@ const index = () => {
             backgroundColor: Option == "weekly" ? "#E0E0E0" : "transparent",
             paddingHorizontal: 10,
             paddingVertical: 8,
-            borderRadius: 24,
+            borderRadius: 20,
           }}
         >
           <Text style={{ textAlign: "center", color: "grey", fontSize: 14 }}>
@@ -72,7 +78,7 @@ const index = () => {
             backgroundColor: Option == "Over all" ? "#E0E0E0" : "transparent",
             paddingHorizontal: 10,
             paddingVertical: 8,
-            borderRadius: 24,
+            borderRadius: 20,
           }}
         >
           <Text style={{ textAlign: "center", color: "grey", fontSize: 14 }}>
