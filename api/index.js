@@ -92,3 +92,5 @@ app.delete("/habits/:habitId", async (req, res) => {
     res.status(500).json({ error: "Unable to delete the habit" });
   }
 });
+
+//all api endpoint are declared//
