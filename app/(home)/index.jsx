@@ -9,10 +9,11 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { dayNames } from "../../constants";
+import { useCallback } from "react";
 import {
   BottomModal,
   ModalTitle,
@@ -44,6 +45,7 @@ const index = () => {
       sethabits(response.data);
     } catch (error) {
       console.log("Error in fetching the habits", error);
+      sethabits([]);
     }
   };
 
@@ -73,15 +75,39 @@ const index = () => {
   };
 
   //filtering the completed habits//
-  const filteredHabits = habits?.filter((habit) => {
-    return !habit.completed || !habit.completed[currentDay];
-  });
+  const filteredHabits = Array.isArray(habits)
+    ? habits.filter((habit) => {
+        return !habit.completed || !habit.completed[currentDay];
+      })
+    : [];
   console.log("filtered habits are: ", habits);
 
   useEffect(() => {
     fetchHabits();
   }, []);
 
+  //to show imediatly after creating the habit//
+  useFocusEffect(
+    useCallback(() => {
+      fetchHabits();
+    }, [])
+  );
+
+  //Deleting the habit//
+  const DeleteHabit = async () => {
+    try {
+      //accessing the habit id//
+      const habitId = selectedHabit?._id;
+      const response = await axios.delete(
+        `http://192.168.1.59:3000/habits/${habitId}`
+      );
+      if (response.status == 200) {
+        sethabits(response.data);
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
   return (
     <>
       <ScrollView style={{ flex: 1, backgroundColor: "white", padding: 10 }}>
@@ -299,6 +325,7 @@ const index = () => {
         )}
       </ScrollView>
 
+      {/* Bottom style sheet */}
       <BottomModal
         onBackdropPress={() => setisModelVisible(!isModelVisible)}
         onHardwareBackPress={() => setisModelVisible(!isModelVisible)}
@@ -367,7 +394,7 @@ const index = () => {
             </Pressable>
 
             <Pressable
-              onPress={""}
+              onPress={DeleteHabit}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -386,5 +413,3 @@ const index = () => {
 };
 
 export default index;
-
-const styles = StyleSheet.create({});

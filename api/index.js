@@ -81,3 +81,14 @@ app.put("/habits/:habitId/completed", async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 });
+
+//To delete an habit//
+app.delete("/habits/:habitId", async (req, res) => {
+  try {
+    const { habitId } = req.params;
+    await Habit.findByIdAndDelete(habitId);
+    res.status(200).json({ message: "Habit deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Unable to delete the habit" });
+  }
+});
