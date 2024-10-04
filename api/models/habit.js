@@ -21,7 +21,7 @@ const habitSchema = new mongoose.Schema({
     default: false,
   },
   completed: {
-    types: Object,
+    type: Object,
     default: {},
   },
   createdAt: {

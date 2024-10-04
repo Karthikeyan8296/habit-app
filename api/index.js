@@ -61,19 +61,23 @@ app.get("/habitsList", async (req, res) => {
 
 //ToMark an habit as complete for that day//
 //To mark and update, we are using another end-point//
-app.put("/habits/:habitId/completed/:day", async (req, res) => {
+app.put("/habits/:habitId/completed", async (req, res) => {
+  const habitId = req.params.habitId;
+  const updateCompletion = req.body.completed;
+  console.log("Received completion data:", updateCompletion);
+
   try {
-    const { habitId, day } = req.params;
-    const habit = await Habit.findById(habitId);
-    if (!habit) {
+    const updatedhabit = await Habit.findByIdAndUpdate(
+      habitId,
+      { completed: updateCompletion },
+      { new: true }
+    );
+    if (!updatedhabit) {
       return res.status(404).json({ error: "habit not found" });
     }
-    habit.completed[day] = true;
-    //saving this in backend//
-    await habit.save();
-    res.status(200).json({ message: "habit completed status updated" });
+    return res.status(200).json(updatedhabit);
   } catch (error) {
     console.log("Error", error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });

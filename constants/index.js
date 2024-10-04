@@ -1,4 +1,4 @@
 import { colors } from "./colors";
-import { days } from "./days";
+import { days, dayNames } from "./days";
 
-export { colors, days };
+export { colors, days, dayNames };
